@@ -1,0 +1,23 @@
+version: "3.8"
+
+services:
+  api:
+    build: ../src
+    volumes:
+      - ../src:/var/www
+    entrypoint: ["/bin/bash", "/var/www/run_dev.sh"]
+    depends_on:
+      - database
+      -
+    ports:
+    - "8000:8000"
+
+  database:
+    image: postgres:13.2
+    environment:
+      POSTGRES_PASSWORD: password
+      POSTGRES_USER: app
+      POSTGRES_DB: app
+
+  rabbit:
+    image: rabbitmq:3.8.12-alpine

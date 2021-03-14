@@ -1,0 +1,1 @@
+/virtualenv/bin/python /var/www/main/manage.py runserver 0.0.0.0:8000
