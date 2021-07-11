@@ -1,0 +1,80 @@
+version: '3.6'
+
+services:
+
+  # Run Django in Debug Mode For Local Dev
+  api-dev:
+    image: app/api
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      CONF_ENV: "local"
+      LC_ALL: "C.UTF-8"
+      LANG: "C.UTF-8"
+      PYTHONPATH: "/var/www/"
+    depends_on:
+      - database
+      - solr
+      - rabbitmq
+    ports:
+      - 8000:8000
+    volumes:
+      - ../src:/var/www
+    command: /virtualenv/bin/python /var/www/main/manage.py runserver 0:8000
+
+  # Run using uwsgi for prod parity
+  api-prod:
+    image: app/api
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      CONF_ENV: "local"
+      LC_ALL: "C.UTF-8"
+      LANG: "C.UTF-8"
+    depends_on:
+      - database
+      - solr
+      - rabbitmq
+    ports:
+      - 8000:8000
+    volumes:
+      - ../src:/var/www
+
+  test:
+    image: app/api
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      CONF_ENV: "local"
+      LC_ALL: "C.UTF-8"
+      LANG: "C.UTF-8"
+      DJANGO_CONF: "conf.test"
+    ports:
+      - 8000:8000
+    volumes:
+      - ../src:/var/www
+    command: /virtualenv/bin/python /var/www/main/manage.py test
+
+  database:
+    image: postgres:13-alpine
+    environment:
+      POSTGRES_PASSWORD: password
+      POSTGRES_USER: app
+    ports:
+      - 5432:5432
+
+  solr:
+    image: solr:8.9
+    ports:
+      - 8983:8983
+
+  rabbitmq:
+    image: rabbitmq:3.9.0-rc.1-management
+    ports:
+     - "4369:4369"
+     - "5671:5671"
+     - "5672:5672"
+     - "15672:15672"

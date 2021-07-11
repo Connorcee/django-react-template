@@ -1,0 +1,1 @@
+/virtualenv/bin/python /var/www/main/manage.py test main.tests.test_main

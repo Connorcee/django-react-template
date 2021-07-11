@@ -8,9 +8,15 @@ services:
     entrypoint: ["/bin/bash", "/var/www/run_dev.sh"]
     depends_on:
       - database
-      -
+      - rabbit
     ports:
     - "8000:8000"
+
+  test:
+    build: ../src
+    volumes:
+      - ../src:/var/www
+    entrypoint: [ "/bin/bash", "/var/www/run_test.sh" ]
 
   database:
     image: postgres:13.2
@@ -21,3 +27,6 @@ services:
 
   rabbit:
     image: rabbitmq:3.8.12-alpine
+    ports:
+    - "5672:5672"
+    - "15672:15672"
