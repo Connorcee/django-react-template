@@ -52,8 +52,6 @@ services:
       LC_ALL: "C.UTF-8"
       LANG: "C.UTF-8"
       DJANGO_CONF: "conf.test"
-    ports:
-      - 8000:8000
     volumes:
       - ../src:/var/www
     command: /virtualenv/bin/python /var/www/main/manage.py test
